@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Perfil;
 use App\Models\Usuario;
 use Illuminate\Http\Request;
+use PDOException;
 
 class UsuarioController extends Controller
 {
@@ -14,7 +16,8 @@ class UsuarioController extends Controller
      */
     public function index()
     {
-        //
+        $usuario=Usuario::orderBy('nomusu')->paginate(10);
+        return view('usuarios.index', compact('usuario'));
     }
 
     /**
@@ -24,7 +27,8 @@ class UsuarioController extends Controller
      */
     public function create()
     {
-        //
+        $perfils=Perfil::array();
+        return view('usuarios.create', compact('perfils'));
     }
 
     /**
@@ -35,7 +39,18 @@ class UsuarioController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'nomusu'=>['string', 'required', 'max:20', 'min:1'],
+            'mail'=>['string', 'required', 'unique:usuarios,mail'],
+            'localidad'=>['string', 'required', 'max:25', 'min:1'],
+            'perfil_id'=>['require']
+        ]);
+        try{
+            Usuario::create($request->all());
+            return redirect()->route('usuario.index')->with("mensaje","Usuario creado");
+        }catch(PDOException $ex){
+            return redirect()->route('usuario.index')->with("mensaje","Error al crear usuario");
+        }
     }
 
     /**
@@ -46,7 +61,7 @@ class UsuarioController extends Controller
      */
     public function show(Usuario $usuario)
     {
-        //
+        return view('usuarios.show', compact('usuario'));
     }
 
     /**
@@ -57,7 +72,8 @@ class UsuarioController extends Controller
      */
     public function edit(Usuario $usuario)
     {
-        //
+        $perfils=Perfil::array();
+        return view('usuarios.edit', compact('usuario','perfils'));
     }
 
     /**
@@ -69,7 +85,18 @@ class UsuarioController extends Controller
      */
     public function update(Request $request, Usuario $usuario)
     {
-        //
+        $request->validate([
+            'nomusu'=>['string', 'required', 'max:20', 'min:1', 'unique:usuarios,nomusu'.$usuario->id],
+            'mail'=>['string', 'required', 'unique:usuarios,mail'.$usuario->id],
+            'localidad'=>['string', 'required', 'max:25', 'min:1'],
+            'perfil_id'=>['required']
+        ]);
+        try{
+            $usuario->update($request->all());
+            return redirect()->route('usuario.index')->with("mensaje","Usuario actualizado");
+        }catch(PDOException $ex){
+            return redirect()->route('usuario.index')->with("mensaje","Error al actualizar usuario");
+        }
     }
 
     /**
@@ -80,6 +107,11 @@ class UsuarioController extends Controller
      */
     public function destroy(Usuario $usuario)
     {
-        //
+        try{
+            $usuario->delete();
+        }catch(PDOException $ex){
+            return redirect()->route('usuario.index')->with("mensaje","Error al borrar usuario");
+        }
+        return redirect()->route('usuario.index')->with("mensaje","Usuario borrado");;
     }
 }

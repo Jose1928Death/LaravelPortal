@@ -18,6 +18,10 @@ class CreateUsuariosTable extends Migration
             $table->string('nomusu')->unique();
             $table->string('mail')->unique();
             $table->string('localidad');
+            $table->foreignId('perfil_id');
+            $table->foreign('perfil_id')
+            ->references("id")->on('perfils')
+            ->onDelete("cascade")->onUpdate("cascade");
             $table->timestamps();
         });
     }
