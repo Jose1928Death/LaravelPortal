@@ -40,10 +40,10 @@ class UsuarioController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'nomusu'=>['string', 'required', 'max:20', 'min:1'],
+            'nomusu'=>['string', 'required', 'max:20', 'min:1', 'unique:usuarios,nomusu'],
             'mail'=>['string', 'required', 'unique:usuarios,mail'],
             'localidad'=>['string', 'required', 'max:25', 'min:1'],
-            'perfil_id'=>['require']
+            'perfil_id'=>['required']
         ]);
         try{
             Usuario::create($request->all());

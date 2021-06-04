@@ -37,6 +37,7 @@
                     {{$perfil->links()}}
                 </div>
             </div>
+            <a href="{{route('usuario.index')}}" class="btn btn-primary mb-2"><i class="fas fa-table"></i> Tabla usuarios</a>
         </div>
     </x-slot>
 </x-plantilla>

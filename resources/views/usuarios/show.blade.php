@@ -10,7 +10,7 @@
                     {{$usuario->perfil->nombre}}
                 </small>
             </p>
-            <a href="{{route('perfil.index')}}" class="btn btn-primary"><i class="fas fa-undo-alt"></i> Volver</a>
+            <a href="{{route('usuario.index')}}" class="btn btn-primary"><i class="fas fa-undo-alt"></i> Volver</a>
             </div>
           </div>
     </x-slot>
